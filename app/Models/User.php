@@ -3,12 +3,14 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -20,7 +22,20 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'google_id',
         'password',
+        'username',
+        'status',
+        'phone',
+        'street',
+        'city',
+        'country',
+        'image',
+        'email_verified_at'
+
+
+
+
     ];
 
     /**
@@ -40,5 +55,27 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed'
     ];
+
+    public function comments(){
+        return $this->hasMany(Comment::class , 'user_id');
+    }
+    public function posts(){
+        return $this->hasMany(Post::class , 'user_id');
+    }
+
+      //customize rename channels
+    /**
+     * The channels the user receives notification broadcasts on.
+     */
+
+
+    public function receivesBroadcastNotificationsOn(): string
+    {
+        return 'users.'.$this->id;
+    }
+    public function status(){
+        return $this->status == 1?'Active':'Not Active';
+    }
 }

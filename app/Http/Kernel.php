@@ -2,6 +2,10 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\checkAdminStatus;
+use App\Http\Middleware\CheckNotificationReadAt;
+use App\Http\Middleware\checkUserStatus;
+use App\Http\Middleware\CheckVerifyEmailApi;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
@@ -36,12 +40,15 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            CheckNotificationReadAt::class,
         ],
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            // CheckNotificationReadAt::class,
+
         ],
     ];
 
@@ -63,5 +70,9 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'checkUserStatus'=>checkUserStatus::class,
+        'checkAdminStatus'=>checkAdminStatus::class,
+        'verifyEmail'=>CheckVerifyEmailApi::class,
+
     ];
 }
